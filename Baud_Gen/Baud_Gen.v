@@ -1,3 +1,16 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 06/09/2025 10:00:30 PM
+// Design Name: 
+// Module Name: Baud_Gen
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
 // Dependencies: 
 // 
 // Revision:
@@ -13,17 +26,18 @@ module Baud_Gen(
                     input wire [1:0] baud_rate,
                     output reg baud_clk
                 );
-    reg [13:0] clk_tick;
-    reg [13:0] final_val;
-    
+    reg [10:0] clk_tick;
+    reg [10:0] final_val;
+    // assuming that the clk freq = 50 MHz and we want the bellow baud rates
+    // 50 MHz -> T = 20ns, div=clk/(BR*16) since we have x16 oversampling
     always @(*)
     begin
         case(baud_rate)
-        00: final_val = 14'd10174;
-        01: final_val = 14'd5208;
-        10: final_val = 14'd2604;
-        11: final_val = 14'd1302;
-        default: final_val = 14'd0;
+        0: final_val = 11'd651;   // BR = 2400
+        1: final_val = 11'd326;    // BR = 4800
+        2: final_val = 11'd163;    // BR = 9600
+        3: final_val = 11'd81;    // BR = 19200
+        default: final_val = 11'd0;
      endcase 
      end
      
@@ -31,14 +45,14 @@ module Baud_Gen(
      begin
         if(!reset)
         begin
-            clk_tick <= 14'd0;
+            clk_tick <= 11'd0;
             baud_clk <= 1'b0;
         end
         else
         begin
             if (clk_tick == final_val)
             begin
-                clk_tick <= 14'b0;
+                clk_tick <= 11'b0;
                 baud_clk <= ~baud_clk;
             end 
             else
