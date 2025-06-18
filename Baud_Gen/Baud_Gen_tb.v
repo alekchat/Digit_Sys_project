@@ -11,7 +11,7 @@ reg clock;
 reg [1:0] baud_rate;
 wire baud_clk;
 
-// Instantiate the module under test (MUT)
+// Instantiate the module under test 
 Baud_Gen dut (
     .reset(reset_n),
     .clk(clock),
